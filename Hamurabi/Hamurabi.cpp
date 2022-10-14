@@ -86,6 +86,12 @@ class Game
         eatSeedsByRats = rand() % int(0.07 * (seeds + plusSeedsByCollect));
         deathCivilsByHunger = civils - (seedsInFoods / 20);
         deathCivilsByHunger = deathCivilsByHunger > 0 ? deathCivilsByHunger : 0;
+        
+        if (deathCivilsByHunger / civils > 0.45) {
+            isOver = true;
+            return;
+        }
+
         newCivils = deathCivilsByHunger / 2 + (5 - plusSeedsByAcre) * (seeds + plusSeedsByCollect) / 600 + 1;
         newCivils = (newCivils < 0) ? 0 : 
                     (newCivils > 50) ? 50 : 
@@ -200,6 +206,7 @@ class Game
 int main()
 {
     setlocale(LC_CTYPE, "rus");
+    srand((int)time(0));
 
     Game game;
     game.startGame();
