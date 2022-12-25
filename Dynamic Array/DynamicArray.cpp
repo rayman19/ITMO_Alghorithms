@@ -1,93 +1,40 @@
 ﻿#include <iostream>
+#include "Array.h"
+#include <gtest/gtest.h>
 
-template<typename T>
-class Array final {
-public:
-    Array() {
-        data = new T[8];
-        cap = 8;
-        sizer = 0;
-    }
 
-    Array(int capacity) {
-        data = new T[capacity];
-        cap = capacity;
-        sizer = 0;
-    }
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 
-    ~Array() {
-        delete [] data;
-    }
+    std::string strings[3] = { "Hello ", "world", " !" };
+    Array<std::string> a(10);
     
-    int insert(const T & value) {
-        data[sizer] = value;
-        sizer++;
-        return sizer - 1;
+    for (int i = 0; i < 3; i++) {
+        a.insert(strings[i]);
     }
 
-    int insert(int index, const T & value) {
-        if (index < 0) return -1;
+    Array<std::string> b;
+    b = a;
 
-        if (index >= sizer) {
-            data[sizer] = value;
-        }
-        else {
-            for (int i = sizer; i > index; i--) {
-                data[i] = data[i - 1];
-            }
-            data[index] = value;
+    std::cout << 3 << ' ' << a.size() << std::endl;
+    std::cout << 3 << ' ' << b.size() << std::endl;
+    std::cout << 10 << ' ' << b.capacity() << std::endl;
 
-        }
-        
-        sizer++;
-        return index;
+    for (int i = 0; i < a.size(); i++) {
+        std::cout << strings[i] << ' ' << a[i] << std::endl;
     }
 
-    void remove(int index) {
-        if (index + 1 > sizer || index < 0) return;
-
-        if (index + 1 == sizer) {
-            data[index] = 0;
-        }
-        else {
-            for (int i = index; i < sizer - 1; i++) {
-                data[i] = data[i + 1];
-            }
-            data[sizer - 1] = 0;
-
-        }
-        sizer--;
+    for (int i = 0; i < b.size(); i++) {
+        std::cout << strings[i] << ' ' << b[i] << std::endl;
     }
 
-    void expand() {
-        cap *= 2;
-        T* tempData = new T[cap];
+    return 0;
 
-        for (int i = 0; i < sizer; i++) {
-            tempData[i] = data[i];
-        }
+    int N = 10;
+    Array<int> arr(N);
 
-        delete [] data;
-        data = tempData;
-    }
-
-    int size() { return sizer; }
-
-    T & operator[](int index) {
-        return data[index];
-    }
-
-private:
-    int cap;
-    int sizer;
-    T * data;
-};
-
-int main()
-{
-    Array<int> arr(20);
-
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < N; i++) {
         arr.insert(i + 1);
     }
 
@@ -100,9 +47,55 @@ int main()
     }
     std::cout << std::endl;
 
+    Array<int> arr2 = arr;
+    Array<int> arr3 = arr2;
 
+    std::cout << arr.capacity();
+    arr.insert(100);
+    arr.insert(200);
+    arr.insert(300);
+    std::cout << '\n' << arr.capacity() << '\n';
+
+    arr3 = arr;
 
     for (int i = 0; i < arr.size(); i++) {
         std::cout << arr[i] << ' ';
     }
+
+    std::cout << std::endl;
+    
+    for (auto it = arr.iterator(); it.hasNext(); it.next())
+        std::cout << it.get() << ' ';
+       
+    std::cout << std::endl;
+
+    for (auto it = arr.reverseIterator(); it.hasNext(); it.next())
+        std::cout << it.get() << ' ';
+
+    std::cout << std::endl;
+
+    for (auto it = arr.iterator(); it.hasNext(); it.next())
+        std::cout << it.get() << ' ';
+
+    std::cout << std::endl;
+
+    for (auto it = arr2.iterator(); it.hasNext(); it.next())
+        std::cout << it.get() << ' ';
+
+    std::cout << std::endl;
+
+    for (auto it = arr3.iterator(); it.hasNext(); it.next())
+        std::cout << it.get() << ' ';
+
+    std::cout << std::endl;
+
+    std::cout << arr.capacity() << ' ' << arr.size() << '\n';
+    std::cout << arr2.capacity() << ' ' << arr2.size() << '\n';
+    std::cout << arr3.capacity() << ' ' << arr3.size() << '\n';
+
+    Array<int> arr4;
+    Array<int> arr5 = std::move(arr2);
+    arr4 = std::move(arr5);
+
+    return 0;
 }
